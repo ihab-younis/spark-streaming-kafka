@@ -24,6 +24,9 @@ public class StockFinnhubApi extends Thread {
 		}
 		httpConnection.disconnect();
 
+		if(!response.isEmpty()){
+			response = response.replace("{" ,  "{\"symbol\":\""+symbol+"\",");
+		}
 		return response;
 	}
 }

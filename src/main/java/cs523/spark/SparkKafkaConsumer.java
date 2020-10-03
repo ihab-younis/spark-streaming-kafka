@@ -28,7 +28,7 @@ public class SparkKafkaConsumer {
 
 	public SparkKafkaConsumer() {
 		SparkConf sparkConf = new SparkConf();
-		sparkConf.setAppName("kafkastreamingclient");
+		sparkConf.setAppName("StockMarket");
 		sparkConf.setMaster("local[*]");
 
 		streamingContext = new JavaStreamingContext(sparkConf, Durations.seconds(1));
@@ -55,11 +55,6 @@ public class SparkKafkaConsumer {
 				hbaseEngine.persistRecord(message);
 
 			}
-			/*rdd.foreach(val -> {
-				
-				System.out.println("message : "+val);
-				hbaseEngine.persistRecord(val);
-			});*/
 
 		});
 		
@@ -80,7 +75,6 @@ public class SparkKafkaConsumer {
 		try {
 			streamingContext.awaitTermination();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

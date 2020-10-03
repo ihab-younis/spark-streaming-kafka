@@ -1,0 +1,6 @@
+cs523/api/StockFinnhubApi.class
+cs523/spark/SparkKafkaConsumer.class
+cs523/db/HbaseEngine$Quote.class
+cs523/MainApplication.class
+cs523/db/HbaseEngine.class
+cs523/kafka/MessageProducer.class

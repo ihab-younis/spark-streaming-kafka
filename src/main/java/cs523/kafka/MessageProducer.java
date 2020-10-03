@@ -14,12 +14,13 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import cs523.api.StockFinnhubApi;
 
 public class MessageProducer extends Thread {
-	Properties props;
 	static final Set<String> SYMBOLS = new HashSet<String>(Arrays.asList("AAPL", "AMZN", "MSFT"));
 	Map<String, String> previousQuotesMap = new HashMap<String, String>();
+	Producer<String, String> producer;
 
 	public MessageProducer() {
-		props = new Properties();
+
+		Properties props = new Properties();
 		props.put("bootstrap.servers", "localhost:9092");
 		props.put("acks", "all");
 		props.put("retries", 0);
@@ -28,7 +29,7 @@ public class MessageProducer extends Thread {
 		props.put("buffer.memory", 33554432);
 		props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 		props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-
+		producer = new KafkaProducer<String, String>(props);
 	}
 
 	@Override
@@ -37,7 +38,6 @@ public class MessageProducer extends Thread {
 	}
 
 	private void produce() {
-		Producer<String, String> producer = new KafkaProducer<String, String>(props);
 		while (true) {
 			String newQuotes = getNewQuotes();
 			if (!newQuotes.isEmpty()) {
@@ -46,10 +46,9 @@ public class MessageProducer extends Thread {
 			try {
 				Thread.sleep(5000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+				producer.close();
 				e.printStackTrace();
 			}
-			producer.close();
 		}
 	}
 
@@ -63,19 +62,16 @@ public class MessageProducer extends Thread {
 				if (symbolQuote.isEmpty())
 					continue;
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			String previousSymbolQuote = previousQuotesMap.get(symbol);
 			if (previousSymbolQuote == null || !symbolQuote.equals(previousSymbolQuote)) {
 				quotesBuilder.append(symbolQuote);
-				//quotesBuilder.append("-");
 				previousQuotesMap.put(symbol, symbolQuote);
 			}
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -83,4 +79,11 @@ public class MessageProducer extends Thread {
 			return quotesBuilder.substring(0, quotesBuilder.length() - 1);
 		return "";
 	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		producer.close();
+		super.finalize();
+	}
+
 }

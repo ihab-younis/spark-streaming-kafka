@@ -1,0 +1,28 @@
+Demo Link
+https://web.microsoftstream.com/video/afec01fc-3ad6-4e20-a5d6-33978f819fef
+-------------------------------------------------
+Stock market API Contract 
+https://finnhub.io/api/v1/quote
+
+Method : GET
+Params: 
+	symbol : any offical stock symbol ex. AAPL
+	token : btkq0ov48v6uuq66v76g 
+Header : N/A
+-------------------------------------------------
+requirements 
+Java 1.8 +
+latest Kafka Server installed on cloudera 
+latest Zookeeper 
+Hbase should be installed and up
+-----------------------
+Running
+to run zookeeper and kafka
+
+/usr/lib/kafka/bin
+sudo ./kafka-server-start.sh /etc/kafka/conf/server.properties
+
+sudo zookeeper-server start
+
+
+
